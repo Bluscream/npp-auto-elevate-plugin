@@ -54,3 +54,7 @@ $RECYCLE.BIN/
 x64/
 .vs/
 *.user
+
+# Release binaries (attached to GitHub releases, not committed)
+AutoElevate.Debug.dll
+AutoElevate.Release.dll
