@@ -3,10 +3,6 @@
 
 param(
     [Parameter(Mandatory=$false)]
-    [ValidateSet("patch", "minor", "major")]
-    [string]$BumpType = "patch",
-    
-    [Parameter(Mandatory=$false)]
     [string]$Version = "",
     
     [Parameter(Mandatory=$false)]
@@ -57,31 +53,48 @@ if (-not $msbuild) {
 Write-Host "Found MSBuild: $msbuild" -ForegroundColor Green
 Write-Host ""
 
-# Determine version
+# Determine version (format: YYYY.MMDD.bump)
 if ($Version) {
     $newVersion = $Version
+    if (-not $newVersion.StartsWith("v")) {
+        $newVersion = "v$newVersion"
+    }
     Write-Host "Using specified version: $newVersion" -ForegroundColor Cyan
 } else {
+    # Get current date components
+    $now = Get-Date
+    $year = $now.Year
+    $month = $now.Month.ToString("00")
+    $day = $now.Day.ToString("00")
+    $datePrefix = "$year.$month$day"
+    
     # Get latest version from git tags
     $latestTag = git tag --sort=-version:refname | Select-Object -First 1
     if ($latestTag) {
         Write-Host "Latest version: $latestTag" -ForegroundColor Cyan
         $versionParts = $latestTag -replace '^v', '' -split '\.'
-        $major = [int]$versionParts[0]
-        $minor = [int]$versionParts[1]
-        $patch = [int]$versionParts[2]
         
-        switch ($BumpType) {
-            "major" { $major++; $minor = 0; $patch = 0 }
-            "minor" { $minor++; $patch = 0 }
-            "patch" { $patch++ }
+        # Check if latest tag is from today
+        if ($versionParts.Count -ge 3) {
+            $latestDatePrefix = "$($versionParts[0]).$($versionParts[1])"
+            if ($latestDatePrefix -eq $datePrefix) {
+                # Same day - increment bump number
+                $bump = [int]$versionParts[2] + 1
+            } else {
+                # Different day - start with bump 1
+                $bump = 1
+            }
+        } else {
+            # Invalid format or first release - start with bump 1
+            $bump = 1
         }
-        
-        $newVersion = "v$major.$minor.$patch"
     } else {
-        $newVersion = "v0.0.1"
-        Write-Host "No existing tags found, starting with: $newVersion" -ForegroundColor Cyan
+        # No existing tags - start with bump 1
+        Write-Host "No existing tags found, starting with date-based version" -ForegroundColor Cyan
+        $bump = 1
     }
+    
+    $newVersion = "v$datePrefix.$bump"
     Write-Host "New version: $newVersion" -ForegroundColor Green
 }
 

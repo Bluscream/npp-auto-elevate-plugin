@@ -35,24 +35,25 @@ The script will:
 
 Use the automated publish script:
 ```powershell
-# Patch version bump (0.0.0 -> 0.0.1)
+# Auto-determine version (format: YYYY.MMDD.bump)
 .\publish.ps1
 
-# Minor version bump (0.0.1 -> 0.1.0)
-.\publish.ps1 -BumpType minor
-
-# Major version bump (0.0.1 -> 1.0.0)
-.\publish.ps1 -BumpType major
-
-# Specific version
-.\publish.ps1 -Version v1.2.3
+# Specific version (format: YYYY.MMDD.bump)
+.\publish.ps1 -Version v2024.1225.1
 
 # Create draft release
 .\publish.ps1 -Draft
 ```
 
+The publish script uses date-based versioning (`YYYY.MMDD.bump`):
+- **YYYY**: 4-digit year (e.g., 2024)
+- **MMDD**: Month and day (e.g., 1225 for December 25th)
+- **bump**: Incremental number for releases on the same day (starts at 1)
+
+Example: `v2024.1225.1` = First release on December 25, 2024
+
 The publish script will:
-- Automatically determine next version (or use specified)
+- Automatically determine next version based on current date (or use specified)
 - Build both Debug and Release configurations
 - Create `AutoElevate.Debug.dll` and `AutoElevate.Release.dll`
 - Generate release notes

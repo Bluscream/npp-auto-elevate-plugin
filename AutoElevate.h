@@ -94,7 +94,6 @@ void SaveSettings();
 void __cdecl ToggleAutoElevate();
 void __cdecl ManualElevate();
 void commandMenuInit();
-void DebugLog(const wchar_t* message);
 
 // Settings
 extern bool g_autoElevateEnabled;
