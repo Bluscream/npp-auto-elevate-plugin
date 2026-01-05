@@ -17,19 +17,48 @@ Automatically elevates Notepad++ to run with administrator privileges on startup
 - Windows 7 or later
 - Visual Studio 2019 or later (with C++ desktop development workload)
 - Notepad++ installed
+- GitHub CLI (gh) - for automated releases (optional)
 
-### Build Steps
+### Quick Build & Install
 
-1. Open `AutoElevate.vcxproj` in Visual Studio, OR
-2. Use the provided PowerShell script:
-   ```powershell
-   .\rebuild-and-install.ps1
-   ```
+Use the provided PowerShell script:
+```powershell
+.\rebuild-and-install.ps1
+```
 
 The script will:
 - Find MSBuild automatically
 - Rebuild the project in Debug configuration
 - Copy DLL and PDB files to Notepad++ plugins folder
+
+### Publishing a Release
+
+Use the automated publish script:
+```powershell
+# Patch version bump (0.0.0 -> 0.0.1)
+.\publish.ps1
+
+# Minor version bump (0.0.1 -> 0.1.0)
+.\publish.ps1 -BumpType minor
+
+# Major version bump (0.0.1 -> 1.0.0)
+.\publish.ps1 -BumpType major
+
+# Specific version
+.\publish.ps1 -Version v1.2.3
+
+# Create draft release
+.\publish.ps1 -Draft
+```
+
+The publish script will:
+- Automatically determine next version (or use specified)
+- Build both Debug and Release configurations
+- Create `AutoElevate.Debug.dll` and `AutoElevate.Release.dll`
+- Generate release notes
+- Commit changes and create git tag
+- Push to GitHub
+- Create GitHub release with both DLLs as assets
 
 ### Manual Build
 
@@ -39,9 +68,12 @@ $msbuild = "P:\Program Files\Microsoft Visual Studio\18\Insiders\MSBuild\Current
 
 # Build Debug configuration
 & $msbuild AutoElevate.vcxproj /p:Configuration=Debug /p:Platform=x64 /t:Rebuild
+
+# Build Release configuration
+& $msbuild AutoElevate.vcxproj /p:Configuration=Release /p:Platform=x64 /t:Rebuild
 ```
 
-Output: `x64\Debug\AutoElevate.dll`
+Output: `x64\Debug\AutoElevate.dll` and `x64\Release\AutoElevate.dll`
 
 ## Installation
 
