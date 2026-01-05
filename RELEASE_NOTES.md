@@ -1,4 +1,4 @@
-﻿# Auto Elevate Plugin v2026.0105.1
+﻿# Auto Elevate Plugin v2026.0105.2
 
 ## Features
 
@@ -10,7 +10,9 @@
 
 ## Installation
 
-1. Download either AutoElevate.Debug.dll (for debugging) or AutoElevate.Release.dll (for production)
+1. Download the appropriate DLL for your architecture:
+   - **x64**: AutoElevate.Release.x64.dll (production) or AutoElevate.Debug.x64.dll (debugging)
+   - **x86**: AutoElevate.Release.x86.dll (production) or AutoElevate.Debug.x86.dll (debugging)
 2. Rename the downloaded file to AutoElevate.dll
 3. Copy to C:\Program Files\Notepad++\plugins\AutoElevate\ (requires admin) or %APPDATA%\Notepad++\plugins\AutoElevate\
 4. Restart Notepad++
@@ -24,19 +26,20 @@
 
 - Windows 7 or later
 - Notepad++ (any recent version)
-- x64 architecture
+- x64 or x86 architecture
 
 ## Technical Details
 
 - Uses PowerShell helper script to handle single-instance mode
 - Helper script waits for current process to exit, then launches elevated instance
-- Debug logging always enabled for troubleshooting
 - Settings stored in %APPDATA%\Notepad++\plugins\config\AutoElevate\config.ini
 
 ## Build Information
 
-- **Debug Build**: Includes debug symbols, larger file size (~737.5 KB)
-- **Release Build**: Optimized, smaller file size (~53 KB)
+- **Debug x64**: Includes debug symbols (~737.5 KB)
+- **Debug x86**: Includes debug symbols (~526 KB)
+- **Release x64**: Optimized (~53 KB)
+- **Release x86**: Optimized (~48 KB)
 
 ## Notes
 
